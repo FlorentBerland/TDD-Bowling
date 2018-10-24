@@ -36,3 +36,62 @@ case class Frame(rolls: List[Roll]) {
   }
 
 }
+
+object Frame {
+
+  /**
+    * Generates a pseudo-random Frame
+    */
+  def generate: Frame = {
+    val firstRoll = Roll.generate
+    if(firstRoll.pinsHit < 10)
+      Frame(firstRoll :: Nil)
+    else
+      Frame(firstRoll :: Roll.generate(firstRoll.pinsHit) :: Nil)
+  }
+
+
+  /**
+    * Generates a pseudo-random last Frame (containing one more opportunity in case of a spare
+    * and 2 for a strike)
+    */
+  def generateLast: Frame = {
+    val firstFrame = generate
+    if(firstFrame.isStrike){
+      val secondFrame = generate
+      if(secondFrame.isStrike)
+        Frame(firstFrame.rolls ++ secondFrame.rolls :+ Roll.generate)
+      else
+        Frame(firstFrame.rolls ++ secondFrame.rolls)
+    } else {
+      if(firstFrame.isSpare)
+        Frame(firstFrame.rolls :+ Roll.generate)
+      else
+        firstFrame
+    }
+  }
+
+
+  /**
+    * Generates a strike Frame
+    */
+  def generateStrike: Frame = Frame(List(Roll.generateStrike))
+
+
+  /**
+    * Generates a pseudo-random spare Frame
+    */
+  def generateSpare: Frame = Frame(Roll.generateSpare)
+
+
+  /**
+    * Generates an all miss frame
+    */
+  def generateMiss: Frame = Frame(List(Roll.generateMiss, Roll.generateMiss))
+
+
+  /**
+    * Generates a regular frame, can be missed
+    */
+  def generateRegular: Frame = Frame(Roll.generateRegular)
+}

@@ -1,5 +1,6 @@
 package bowling
 
+import language.postfixOps
 import scala.annotation.tailrec
 
 
@@ -29,4 +30,24 @@ case class Game(frames: List[Frame]){
     scoreRec(frames, 0, List.empty)
   }
 
+}
+
+object Game {
+
+  /**
+    * Generates a pseudo-random Game
+    */
+  def generate: Game = Game(List.fill(9)(Frame.generate) :+ Frame.generateLast)
+
+
+  /**
+    * Generates a game with only strikes
+    */
+  def generateAllStrikes: Game = Game(List.fill(9)(Frame.generateStrike) :+ Frame(List.fill(3)(Roll.generateStrike)))
+
+
+  /**
+    * Generates a game with only miss
+    */
+  def generateAllMiss: Game = Game(List.fill(10)(Frame.generateMiss))
 }
