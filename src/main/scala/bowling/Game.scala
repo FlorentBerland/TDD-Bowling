@@ -9,7 +9,7 @@ import scala.annotation.tailrec
   *
   * @param frames The frames of the game
   */
-case class Game(frames: List[Frame]){
+case class Game private (frames: List[Frame]){
 
   /**
     * Computes the score of the game
@@ -34,20 +34,22 @@ case class Game(frames: List[Frame]){
 
 object Game {
 
+  def apply(frames: List[Frame]): Option[Game] = if(frames.size > 10) None else Some(new Game(frames))
+
   /**
     * Generates a pseudo-random Game
     */
-  def generate: Game = Game(List.fill(9)(Frame.generate) :+ Frame.generateLast)
+  def generate: Game = new Game(List.fill(9)(Frame.generate) :+ Frame.generateLast)
 
 
   /**
     * Generates a game with only strikes
     */
-  def generateAllStrikes: Game = Game(List.fill(9)(Frame.generateStrike) :+ Frame(List.fill(3)(Roll.generateStrike)))
+  def generateAllStrikes: Game = new Game(List.fill(9)(Frame.generateStrike) :+ Frame(List.fill(3)(Roll.generateStrike)))
 
 
   /**
     * Generates a game with only miss
     */
-  def generateAllMiss: Game = Game(List.fill(10)(Frame.generateMiss))
+  def generateAllMiss: Game = new Game(List.fill(10)(Frame.generateMiss))
 }
